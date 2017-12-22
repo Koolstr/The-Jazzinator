@@ -2,9 +2,9 @@ import os
 import logging
 import numpy as np
 import tensorflow as tf    
-import tensorflow.python.ops.rnn_cell as rnn_cell
-import tensorflow.python.ops.rnn as rnn
-import tensorflow.contrib.seq2seq as seq2seq
+from tensorflow.contrib.rnn import RNNCell as rnn_cell
+from tensorflow.contrib.rnn import BasicRNNCell, GRUCell, BasicLSTMCell
+from tensorflow.contrib import rnn, seq2seq
 
 import nottingham_util
 
@@ -27,8 +27,6 @@ class Model(object):
         dropout_prob = config.dropout_prob
         input_dropout_prob = config.input_dropout_prob
         cell_type = config.cell_type
-        rnn_cell_basic = rnn_cell.BasicRNNCell
-
         self.seq_input = \
             tf.placeholder(tf.float32, shape=[self.time_batch_len, None, input_dim])
 
@@ -47,17 +45,17 @@ class Model(object):
 
         def create_cell(input_size):
             if cell_type == "vanilla":
-                cell_class = rnn_cell.BasicRNNCell
+                cell_class = BasicRNNCell
             elif cell_type == "gru":
-                cell_class = rnn_cell.BasicGRUCell
+                cell_class = GRUCell
             elif cell_type == "lstm":
-                cell_class = rnn_cell.BasicLSTMCell
+                cell_class = BasicLSTMCell
             else:
                 raise Exception("Invalid cell type: {}".format(cell_type))
 
             cell = cell_class(hidden_size, input_size = input_size)
             if training:
-                return rnn_cell.DropoutWrapper(cell, output_keep_prob = dropout_prob)
+                return tensorflow.python.ops.rnn_cell.DropoutWrapper(cell, output_keep_prob = dropout_prob)
             else:
                 return cell
 
@@ -66,7 +64,7 @@ class Model(object):
         else:
             self.seq_input_dropout = self.seq_input
 
-        self.cell = rnn_cell_basic(
+        self.cell = BasicRNNCell(
             [create_cell(input_dim)] + [create_cell(hidden_size) for i in range(1, num_layers)])
 
         batch_size = tf.shape(self.seq_input_dropout)[0]
