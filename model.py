@@ -3,7 +3,7 @@ import logging
 import numpy as np
 import tensorflow as tf    
 from tensorflow.contrib.rnn import RNNCell as rnn_cell
-from tensorflow.contrib.rnn import BasicRNNCell, GRUCell, BasicLSTMCell
+from tensorflow.contrib.rnn import BasicRNNCell, GRUCell, BasicLSTMCell, DropoutWrapper
 from tensorflow.contrib import rnn, seq2seq
 
 import nottingham_util
@@ -53,9 +53,9 @@ class Model(object):
             else:
                 raise Exception("Invalid cell type: {}".format(cell_type))
 
-            cell = cell_class(hidden_size, input_size = input_size)
+            cell = cell_class(hidden_size, input_size)
             if training:
-                return tensorflow.python.ops.rnn_cell.DropoutWrapper(cell, output_keep_prob = dropout_prob)
+                return DropoutWrapper(cell, output_keep_prob = dropout_prob)
             else:
                 return cell
 
