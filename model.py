@@ -27,6 +27,7 @@ class Model(object):
         dropout_prob = config.dropout_prob
         input_dropout_prob = config.input_dropout_prob
         cell_type = config.cell_type
+        rnn_cell_basic = rnn_cell.BasicRNNCell
 
         self.seq_input = \
             tf.placeholder(tf.float32, shape=[self.time_batch_len, None, input_dim])
@@ -65,7 +66,7 @@ class Model(object):
         else:
             self.seq_input_dropout = self.seq_input
 
-        self.cell = rnn_cell.MultiRNNCell(
+        self.cell = rnn_cell_basic(
             [create_cell(input_dim)] + [create_cell(hidden_size) for i in range(1, num_layers)])
 
         batch_size = tf.shape(self.seq_input_dropout)[0]
