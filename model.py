@@ -2,9 +2,9 @@ import os
 import logging
 import numpy as np
 import tensorflow as tf    
-import tensorflow.python.ops.rnn_cell
-import tensorflow.python.ops.rnn
-import tensorflow.contrib.seq2seq
+import tensorflow.python.ops.rnn_cell as rnn_cell
+import tensorflow.python.ops.rnn as rnn
+import tensorflow.contrib.seq2seq as seq2seq
 
 import nottingham_util
 

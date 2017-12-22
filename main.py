@@ -3,7 +3,7 @@ import zipfile
 import nottingham_util
 import rnn
 
-zip = zipfile.ZipFile(r'datas.zip')  
+zip = zipfile.ZipFile(r'dataset.zip')  
 zip.extractall('data')  
 
 # build the model
